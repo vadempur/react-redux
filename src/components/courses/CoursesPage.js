@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import * as courseActions from '../../redux/actions/courseAction';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from "redux";
 
 
 class CoursesPage extends React.Component {
@@ -15,34 +16,24 @@ class CoursesPage extends React.Component {
     };
   }
 
-  handleChange=(event)=>{
-   const course={...this.state.course ,title:event.target.value }
-   this.setState({ course })
+  componentDidMount(){
+    courseActions.loadCourses().catch(error=>{
+      alert("Load courses Failed" + error)
+    })
   }
 
-  handleSubmit=(event)=>{
-    event.preventDefault();
-    this.props.createCourse(this.state.course)
-    this.setState({course:{title:""}})
-  }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <h2>Courses</h2>
-        <h3>Add Course</h3>
-        <input type = "text"
-         onChange={this.handleChange}
-         value={this.state.course.title}
-         />
-        <input type="submit" value="save"/>
+      <>
+      <h1>Courses</h1>
         {this.props.courses.map(course=>(
           <div key={course.title}>
             {course.title}
             </div>
         ))
         }
-      </form>
+      </>
     )
   }
 }
@@ -54,7 +45,7 @@ CoursesPage.propTypes={
 
 function mapDispatchToProps(dispatch){
   return{
-    createCourse:course=>dispatch(courseActions.createCourse(course))
+    actions:bindActionCreators(courseActions,dispatch)
   }
 }
 

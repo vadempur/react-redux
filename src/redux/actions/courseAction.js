@@ -1,4 +1,6 @@
-import { CREATE_COURSE } from "./actionTypes";
+import { CREATE_COURSE, LOAD_COURSES_SUCCESS } from "./actionTypes";
+
+import * as courseApi from '../../api/courseApi';
 
 export function createCourse(course){
     return  {
@@ -6,3 +8,22 @@ export function createCourse(course){
         course:course
     }
 }
+
+export function loadCoursesSuccess(courses){
+    return{
+        type:LOAD_COURSES_SUCCESS,
+        courses
+    }
+}
+
+export function loadCourses(){
+    return function (dispatch){
+     courseApi.getCourses().then(courses=>{
+         dispatch(loadCoursesSuccess(courses))
+     })
+     .catch(error=>{
+         throw error
+     })
+    }
+}
+
